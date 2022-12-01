@@ -1,45 +1,24 @@
 #!/usr/bin/python3
 
 from core import Core
+from helper import Helper
+from arguments import Argument
 from datetime import datetime
-import os,sys
-
-root_path = os.path.dirname(os.path.abspath(__file__)) + "/../"
-rule_path = root_path + "/resource/rules.json"
-
-folder_path = ""
-output_path = ""
-
-def control():
-    if (len(sys.argv) != 2):
-        help()
-        sys.exit()
-    else:
-        global folder_path
-        folder_path = sys.argv[1]
-
-        global output_path
-        output_path = folder_path + str(datetime.today()).replace(" ","-") + "-result.json"
-
-
-def help():
-    print ("[!] There is an error while giving arguments")
-    print ("python main.py /Users/tom/Desktop/Test/")
+import sys
+    
 
 if __name__ == '__main__':
-    control()
-    c = Core(folder_path,rule_path,output_path)
-    files = c.allFilesinFolder()
-    rules = c.readRulesFromJson()
-    
-    print ("Seek4Treasure is started")
-    
-    #Walk in all files
-    for file in files:
-        c.readFile(file)    
+    a = Argument()
+    params = a.helper()
+    if params is not None:
+        folder_path = Helper.last_char_control(params["folder_path"],"/")
+        rule_file = params["rule_file"]
+        output_path = Helper.last_char_control(params["output_path"],"/") + str(datetime.now()).replace(" ","_") + "_seek4treasure-result.json"
 
-    #After everything finish create result
-    c.create_output()
-
-    print ("Everything is okay. Result path is " + output_path)
+        c = Core(folder_path,rule_file,output_path)
+        
+    else:
+        print ("There is an error while giving parametrers")
+        sys.exit()
+    
     
